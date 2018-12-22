@@ -1,10 +1,6 @@
 <template>
   <section class="profile">
-    <header class="header">
-      <div class="header_title">
-        <span class="header_title_text">我的</span>
-      </div>
-    </header>
+    <NavHeader title="我的"/>
     <section class="profile-number">
       <router-link to="/login" class="profile-link">
         <div class="profile_image">
@@ -19,7 +15,7 @@
             <span class="icon-mobile-number">暂无绑定手机号</span>
           </p>
         </div>
-        <span class="arrow">
+        <span class="arrow" @click="$router.push('/login')">
           <i class="iconfont icon-jiantou1"></i>
         </span>
       </router-link>
@@ -103,33 +99,7 @@
   @import "../../common/stylus/mixins.styl"
   .profile //我的
     width 100%
-    .header //头部公共css
-      background-color #02a774
-      position fixed
-      z-index 100
-      left 0
-      top 0
-      width 100%
-      height 45px
-      .header_search
-        position absolute
-        left 15px
-        top 50%
-        transform translateY(-50%)
-        width 10%
-        height 50%
-        .iconfont
-          font-size 22px
-          color #fff
-      .header_title
-        position absolute
-        top 50%
-        left 50%
-        transform translate(-50%, -50%)
-        width 30%
-        color #fff
-        font-size 22px
-        text-align center
+
     .profile-number
       margin-top 45.5px
       .profile-link
