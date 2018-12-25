@@ -3,10 +3,11 @@
       <!--首页头部-->
       <NavHeader :title="address.name || '正在定位中...'">
         <a class="header_search" slot="left">
-          <i class="iconfont icon-sousuo"></i>
+          <i class="iconfont icon-sousuo" @click="$router.replace('/search')"></i>
         </a>
         <a class="header_login" slot="right">
-          <span class="header_login_text">登录|注册</span>
+          <span class="header_login_text" v-if="!user._id" @click="$router.push('/login')">登录|注册</span>
+          <i class="iconfont icon-person" v-else @click="$router.replace('/userinfo')"></i>
         </a>
       </NavHeader>
       <!--首页导航-->
@@ -49,7 +50,13 @@
       this.$store.dispatch('getCategorys')
     },
     computed: {
-      ...mapState(['address','categorys']),
+      // ...mapState(['address','categorys']),
+      ...mapState({
+        address: state => state.msite.address,
+        categorys: state => state.msite.categorys,
+        user: state => state.user.user
+      }),
+
       // 根据从state中获取到的数据添加计算属性(获取到的数据是一个一维数组，不方便遍历显示到页面上，要加工成二维数组)
       categorysArr(){
         // 拿到获取到的数据
