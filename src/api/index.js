@@ -21,3 +21,8 @@ export const reqSmsLogin = (phone,code) => ajax(BASE + `/login_sms`,{phone,code}
 
 // [9、根据会话获取用户信息](#9根据会话获取用户信息)<br/>
 export const reqUser = () => ajax(BASE + `/userinfo`)
+
+// 商家页面数据接口请求函数
+export const reqGoods = () => ajax('/goods')
+export const reqRatings = () => ajax('/ratings')
+export const reqInfo = () => ajax('/info')
