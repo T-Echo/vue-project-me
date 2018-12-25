@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 import {
   reqGoods,
   reqRatings,
@@ -7,7 +9,9 @@ import {
 import {
   RECEIVE_GOODS,
   RECEIVE_RATINGS,
-  RECEIVE_INFO
+  RECEIVE_INFO,
+  REDUCE_FOOD_COUNT,
+  ADD_FOOD_COUNT
 } from '../mutation-type'
 
 const state = {
@@ -24,6 +28,19 @@ const mutations = {
   },
   [RECEIVE_INFO] (state, {info}) {
     state.info = info
+  },
+  [ADD_FOOD_COUNT] (state,{food}){
+    if (!food.count){
+      // food.count = 1
+      Vue.set(food, 'count', 1)
+    }else {
+      food.count++
+    }
+  },
+  [REDUCE_FOOD_COUNT] (state,{food}){
+    if (food.count > 0) {
+      food.count--
+    }
   }
 }
 
@@ -48,6 +65,13 @@ const actions = {
     if (result.code === 0){
       const info = result.data
       commit(RECEIVE_INFO,{info})
+    }
+  },
+  updateFoodCount({commit},{isAdd,food}){
+    if (isAdd){
+      commit(ADD_FOOD_COUNT,{food})
+    }else {
+      commit(REDUCE_FOOD_COUNT,{food})
     }
   }
 }
