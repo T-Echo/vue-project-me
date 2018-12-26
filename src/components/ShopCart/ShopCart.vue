@@ -2,7 +2,7 @@
   <div>
     <div class="shopcart">
       <div class="content">
-        <div class="content-left">
+        <div class="content-left" @click="toggleShow">
           <div class="logo-wrapper">
             <div class="logo" :class="{highlight:totalCount>0}">
               <i class="iconfont icon-shopping_cart" :class="{highlight:totalCount>0}"></i>
@@ -18,35 +18,37 @@
           </div>
         </div>
       </div>
-      <div class="shopcart-list" style="display: none;">
+      <div class="shopcart-list" v-show="listShow">
         <div class="list-header">
           <h1 class="title">购物车</h1>
           <span class="empty">清空</span>
         </div>
         <div class="list-content">
           <ul>
-            <li class="food">
-              <span class="name">红枣山药糙米粥</span>
-              <div class="price"><span>￥10</span></div>
+            <li class="food" v-for="(food,index) in cartFoods" :key="index">
+              <span class="name">{{food.name}}</span>
+              <div class="price"><span>￥{{food.price}}</span></div>
               <div class="cartcontrol-wrapper">
-                <div class="cartcontrol">
-                  <div class="iconfont icon-remove_circle_outline"></div>
-                  <div class="cart-count">1</div>
-                  <div class="iconfont icon-add_circle"></div>
-                </div>
+                <CartControl :food="food"/>
               </div>
             </li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="list-mask" style="display: none;"></div>
+    <div class="list-mask" v-show="listShow" @click="toggleShow"></div>
   </div>
 </template>
 
 <script>
+  import BScroll from 'better-scroll'
   import {mapState,mapGetters} from 'vuex'
   export default {
+    data(){
+      return {
+        isShow: false
+      }
+    },
     computed:{
       ...mapState({
         cartFoods: state => state.shop.cartFoods,
@@ -69,6 +71,34 @@
         const {totalPrice} = this
         const {minPrice} = this.info
         return totalPrice >= minPrice ? 'enough':'not-enough'
+      },
+      listShow(){
+        const {isShow,totalCount} = this
+        if (totalCount === 0){
+          // 点击一下购物车时会将this.isShow变为true，这时再点餐总数量就大于0，同时isShow变化会触发listShow
+          // 并且listShow为true，购物车列表由listShow控制，所以点餐时会弹出购物车列表
+          this.isShow = false // 这一步解决先点击购物车 再加点餐时会自动弹出购物车列表的问题
+          return false
+        }
+
+        if (this.isShow){
+          this.$nextTick(() => {
+            if (!this.scroll){
+              this.scroll = new BScroll('.list-content',{
+                click: true
+              })
+            }else {
+              // 如果已经有scroll对象，通知scroll刷新重新计算高度形成滑动
+              this.scroll.refresh()
+            }
+          })
+        }
+        return this.isShow
+      }
+    },
+    methods: {
+      toggleShow(){
+        this.isShow = !this.isShow
       }
     }
   }
@@ -168,6 +198,7 @@
       top: 0
       z-index: -1
       width: 100%
+      transform translateY(-100%)
       .list-header
         height: 40px
         line-height: 40px

@@ -46,7 +46,7 @@ const mutations = {
 
       // 如果food.count === 0,就将当前food从cartFoods数组中删除
       if (food.count === 0){
-        state.cartFoods.slice(state.cartFoods.indexOf(food), 1)
+        state.cartFoods.splice(state.cartFoods.indexOf(food), 1)
       }
     }
   }
